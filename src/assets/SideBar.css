@@ -1,0 +1,124 @@
+/* Arquivo: src/assets/SideBar.css */
+
+.sidebar {
+	width: 220px;
+	height: 100vh;
+	background: linear-gradient(180deg, #b71c1c 0%, #8e0000 100%);
+	color: #fff;
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+	box-sizing: border-box;
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* logo ajustado para exibir imagem + texto */
+
+
+.logo-img {
+	width: 210px;
+	height: auto;
+}
+
+.logo-text {
+	/* garante que o texto fique alinhado e não quebre */
+	white-space: nowrap;
+	font-size: 14px;
+	line-height: 1.2;
+}
+
+.logo-text small {
+	font-size: 10px;
+	font-weight: 400;
+	opacity: 0.8;
+}
+
+.menu-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.menu-list li {
+	margin-bottom: 12px;
+}
+
+.menu-link {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 6px;
+	border-radius: 8px;
+	color: #fff;
+	text-decoration: none;
+	transition: background 0.15s, transform 0.08s;
+}
+
+.menu-link:hover {
+	background: rgba(255,255,255,0.04);
+	transform: translateX(2px);
+}
+
+.icon {
+	width: 36px;
+	height: 36px;
+	flex: 0 0 36px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: rgba(255,255,255,0.06);
+	color: #fff;
+}
+
+.icon svg {
+	display: block;
+}
+
+.label {
+	font-size: 14px;
+	opacity: 0.95;
+}
+
+/* user-profile placeholder */
+.user-profile {
+	margin-top: 10px;
+	/* ...existing code... */
+}
+
+/* Sign out button fixed to bottom of sidebar */
+.signout {
+	margin-top: auto;
+	background: transparent;
+	border: none;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 6px;
+	cursor: pointer;
+	border-radius: 8px;
+	transition: background 0.15s;
+	font-size: 14px;
+}
+
+.signout:hover {
+	background: rgba(255,255,255,0.04);
+}
+
+.signout-icon {
+	width: 36px;
+	height: 36px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: rgba(255,255,255,0.04);
+	color: #fff;
+}
+.logo-image {
+	width: 180px;
+	justify-content: center;
+	
+	object-fit: contain;
+}
