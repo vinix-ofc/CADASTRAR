@@ -1,12 +1,6 @@
-// Arquivo: src/components/Sidebar.tsx
+import './SideBar.css'; 
+import logo from './img/logoBranca.png';
 
-import './SideBar.css'; // Importa o arquivo de estilo
-
-// ## AQUI ESTÁ A MUDANÇA ##
-// O caminho da logo foi corrigido para usar a imagem do projeto, não a do Vite.
-import logo from '../assets/img/logoBranca.png'; 
-
-// Importando os ícones que serão usados
 import {
   Home,
   FileText,
@@ -15,14 +9,21 @@ import {
   LogOut,
   ChartColumnIncreasing,
   SquareCheckBig,
-  Grid2X2Plus
+  Grid2X2Plus,
+  // ChevronLeft REMOVIDO
 } from 'lucide-react';
 
-// Importa o NavLink para criar os links de navegação
 import { NavLink } from 'react-router-dom';
+// useState REMOVIDO
 
-export default function Sidebar() {
-  // Array de objetos para criar os itens do menu
+// Definição de Tipos para as Props
+interface SidebarProps {
+ isExpanded: boolean;
+}
+
+// O componente agora recebe as props tipadas
+export default function Sidebar({ isExpanded }: SidebarProps) {
+
   const menuItems = [
     { key: 'home', label: 'Home', icon: <Home size={22} strokeWidth={1.6} />, to: '/home' },
     { key: 'transfers', label: 'Tarefas', icon: <SquareCheckBig size={22} strokeWidth={1.6} />, to: '/tarefas' },
@@ -34,7 +35,9 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isExpanded ? 'expanded' : 'collapsed'}`}>
+      {/* Botão de toggle interno removido */}
+
       <div className="logo">
         <img src={logo} alt="Maintech" className="logo-img" />
       </div>
@@ -50,7 +53,7 @@ export default function Sidebar() {
                 }
               >
                 <span className="icon">{item.icon}</span>
-                <span className="label">{item.label}</span>
+                {isExpanded && <span className="label">{item.label}</span>}
               </NavLink>
             </li>
           ))}
@@ -62,7 +65,7 @@ export default function Sidebar() {
         <span className="icon">
           <LogOut size={22} strokeWidth={1.6} />
         </span>
-        <span className="label">Sair da conta</span>
+        {isExpanded && <span className="label">Sair da conta</span>}
       </button>
     </aside>
   );

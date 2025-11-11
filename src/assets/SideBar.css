@@ -1,36 +1,86 @@
 /* Arquivo: src/assets/SideBar.css */
 
 .sidebar {
-	width: 220px;
+	/* --- Variáveis para fácil customização --- */
+	--sidebar-width: 220px;
+	--sidebar-collapsed-width: 70px;
+	--grad-start: #b71c1c;
+	--grad-end: #8e0000;
+	--text-color: #ffffff;
+	--bg-accent-light: rgba(255, 255, 255, 0.06);
+	--bg-accent-hover: rgba(255, 255, 255, 0.04);
+
+	--spacing-md: 20px;
+	--spacing-sm: 12px;
+	--spacing-xs: 10px;
+
+	--font-size-md: 14px;
+	--font-size-sm: 10px;
+	--radius-md: 8px;
+	--icon-size: 36px;
+	/* ----------------------------------------- */
+
+	width: var(--sidebar-width);
 	height: 100vh;
-	background: linear-gradient(180deg, #b71c1c 0%, #8e0000 100%);
-	color: #fff;
+	background: linear-gradient(180deg, var(--grad-start) 0%, var(--grad-end) 100%);
+	color: var(--text-color);
 	display: flex;
 	flex-direction: column;
-	padding: 20px;
+	padding: var(--spacing-md);
 	box-sizing: border-box;
 	font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+	transition: width 0.3s ease-in-out;
+	position: relative;
+}
+
+.sidebar.collapsed {
+	width: var(--sidebar-collapsed-width);
+}
+
+.toggle-btn {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	background: transparent;
+	border: none;
+	color: var(--text-color);
+	cursor: pointer;
+	padding: 5px;
+	border-radius: 50%;
+	transition: background 0.15s;
+	z-index: 10;
+}
+
+.toggle-btn:hover {
+	background: var(--bg-accent-hover);
+}
+
+.toggle-icon {
+	transition: transform 0.3s ease-in-out;
+}
+
+.toggle-icon.rotated {
+	transform: rotate(180deg);
 }
 
 /* logo ajustado para exibir imagem + texto */
-
+.logo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: var(--spacing-md);
+	transition: all 0.3s ease-in-out;
+	margin-top: 40px; /* Espaço para o botão toggle */
+}
 
 .logo-img {
-	width: 210px;
+	width: 180px; /* Mantido fixo pois é específico do logo */
 	height: auto;
+	margin-bottom: var(--spacing-xs);
 }
 
-.logo-text {
-	/* garante que o texto fique alinhado e não quebre */
-	white-space: nowrap;
-	font-size: 14px;
-	line-height: 1.2;
-}
-
-.logo-text small {
-	font-size: 10px;
-	font-weight: 400;
-	opacity: 0.8;
+.sidebar.collapsed .logo {
+	display: none; /* Esconde completamente o logo quando a sidebar está colapsada */
 }
 
 .menu-list {
@@ -40,35 +90,42 @@
 }
 
 .menu-list li {
-	margin-bottom: 12px;
+	margin-bottom: var(--spacing-sm);
 }
 
 .menu-link {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: var(--spacing-sm);
 	padding: 8px 6px;
-	border-radius: 8px;
-	color: #fff;
+	border-radius: var(--radius-md);
+	color: var(--text-color);
 	text-decoration: none;
 	transition: background 0.15s, transform 0.08s;
 }
 
-.menu-link:hover {
-	background: rgba(255,255,255,0.04);
+/* Melhora a acessibilidade para navegação com teclado */
+.menu-link:hover,
+.menu-link:focus-visible {
+	background: var(--bg-accent-hover);
 	transform: translateX(2px);
+	outline: none; /* Remove o contorno padrão em favor do nosso estilo */
+}
+
+.menu-link.active {
+	background: rgba(199, 76, 76, 0.8);
 }
 
 .icon {
-	width: 36px;
-	height: 36px;
-	flex: 0 0 36px;
+	width: var(--icon-size);
+	height: var(--icon-size);
+	flex: 0 0 var(--icon-size);
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-	background: rgba(255,255,255,0.06);
-	color: #fff;
+	background: var(--bg-accent-light);
+	color: var(--text-color);
 }
 
 .icon svg {
@@ -76,13 +133,18 @@
 }
 
 .label {
-	font-size: 14px;
+	font-size: var(--font-size-md);
 	opacity: 0.95;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar.collapsed .label {
+	opacity: 0;
 }
 
 /* user-profile placeholder */
 .user-profile {
-	margin-top: 10px;
+	margin-top: var(--spacing-xs);
 	/* ...existing code... */
 }
 
@@ -91,34 +153,32 @@
 	margin-top: auto;
 	background: transparent;
 	border: none;
-	color: #fff;
+	color: var(--text-color);
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: var(--spacing-xs);
 	padding: 10px 6px;
 	cursor: pointer;
-	border-radius: 8px;
+	border-radius: var(--radius-md);
 	transition: background 0.15s;
-	font-size: 14px;
+	font-size: var(--font-size-md);
+	width: 100%; /* Garante que o botão ocupe a largura para o clique */
+	text-align: left;
 }
 
-.signout:hover {
-	background: rgba(255,255,255,0.04);
+.signout:hover,
+.signout:focus-visible {
+	background: var(--bg-accent-hover);
+	outline: none;
 }
 
 .signout-icon {
-	width: 36px;
-	height: 36px;
+	width: var(--icon-size);
+	height: var(--icon-size);
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-	background: rgba(255,255,255,0.04);
-	color: #fff;
-}
-.logo-image {
-	width: 180px;
-	justify-content: center;
-	
-	object-fit: contain;
+	background: var(--bg-accent-light);
+	color: var(--text-color);
 }

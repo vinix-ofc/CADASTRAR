@@ -5,7 +5,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: '0.0.0.0',
-    historyApiFallback: true,
-  } as any,
+    host: '0.0.0.0'
+  },
 })

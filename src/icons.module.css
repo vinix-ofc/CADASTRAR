@@ -8,25 +8,15 @@
   justify-content: center;
 }
 
+/* Cores específicas para cada ícone */
 .iconWrench {
-  
-  background-color: #ff5722; /* Orange */
+  color: #1E9FCE;
 }
 
 .iconCrimp {
-  
-  background-color: #2196f3; /* Blue */
+  color: #c2185b;
 }
 
 .iconGerador {
-  background-color: #4caf50; /* Green */
-}
-
-.iconTreinamento {
- 
-  background-color: #9c27b0; /* Purple */
-}
-
-.iconManutencao {
-  background-color: #ff9800; /* Amber */
-}
+  color: #388e3c;
+} 

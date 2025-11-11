@@ -1,58 +1,22 @@
 import React, { useState } from 'react';
 import styles from './CadastroMaquinas.module.css';
-import { Wrench, Hammer, Zap, Bell, UserCircle, Pencil, Trash2 } from 'lucide-react';
+import { Wrench, Hammer, Zap, Bell, UserCircle, Pencil, Trash2, Loader2, AlertTriangle } from 'lucide-react';
+import { useMaquinas } from './hooks/useMaquinas';
+import type { Maquina } from './hooks/useMaquinas';
 
-interface Maquina {
-  id: number;
-  nome: string;
-  idMaquina: string;
-  oficina: string;
-  icone: React.ReactElement;
-  iconClass: string;
-}
+// interface MaquinaUI extends Omit<Maquina, 'createdAt' | 'updatedAt'> {
+//   icone: React.ReactElement;
+//   iconClass: string;
+// }
 
-const maquinasCadastradas: Maquina[] = [
-  {
-    id: 1,
-    nome: 'Quinadora',
-    idMaquina: '123456',
-    oficina: 'Oficina Mecânica',
-    icone: <Wrench size={32} />,
-    iconClass: styles.iconQuinadora,
-  },
-  {
-    id: 2,
-    nome: 'Crimpagem',
-    idMaquina: '123456',
-    oficina: 'Oficina Hidráulica',
-    icone: <Hammer size={32} />,
-    iconClass: styles.iconCrimpagem,
-  },
-  {
-    id: 3,
-    nome: 'Gerador',
-    idMaquina: '123456',
-    oficina: 'Oficina Elétrica',
-    icone: <Zap size={32} />,
-    iconClass: styles.iconGerador,
-  },
-  {
-    id: 4,
-    nome: 'Torno mini',
-    idMaquina: '123456',
-    oficina: 'Oficina de Treinamento',
-    icone: <Wrench size={32} />,
-    iconClass: styles.iconTorno,
-  },
-  {
-    id: 5,
-    nome: 'Retífica',
-    idMaquina: '123456',
-    oficina: 'Oficina Manutenção',
-    icone: <Wrench size={32} />,
-    iconClass: styles.iconRetifica,
-  },
-];
+// Mapeamento dos ícones por tipo de máquina
+const iconMap: Record<string, { icon: React.ReactElement; class: string }> = {
+  quinadora: { icon: <Wrench size={24} />, class: styles.iconQuinadora },
+  crimpagem: { icon: <Hammer size={24} />, class: styles.iconCrimpagem },
+  gerador: { icon: <Zap size={24} />, class: styles.iconGerador },
+  torno: { icon: <Wrench size={24} />, class: styles.iconTorno },
+  retifica: { icon: <Hammer size={24} />, class: styles.iconRetifica },
+};
 
 const CadastroMaquinas: React.FC = () => {
   const [nomeMaquina, setNomeMaquina] = useState('');
@@ -60,7 +24,11 @@ const CadastroMaquinas: React.FC = () => {
   const [oficina, setOficina] = useState('');
   const [conjuntos, setConjuntos] = useState('');
 
-  const handleCadastro = (event: React.FormEvent) => {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const { maquinas, loading, error, cadastrarMaquina, atualizarMaquina, excluirMaquina } = useMaquinas();
+
+  const handleCadastro = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!nomeMaquina || !idDaMaquina || !oficina) {
@@ -68,19 +36,53 @@ const CadastroMaquinas: React.FC = () => {
       return;
     }
 
-    console.log('Cadastrando máquina:', {
-      nome: nomeMaquina,
-      id: idDaMaquina,
-      oficina,
-      conjuntos,
-    });
+    try {
+      const data = {
+        nome: nomeMaquina,
+        idMaquina: idDaMaquina,
+        oficina,
+        conjuntos: conjuntos || undefined,
+      };
 
-    alert(`Máquina "${nomeMaquina}" cadastrada com sucesso!`);
+      if (editingId) {
+        await atualizarMaquina(editingId, data);
+      } else {
+        await cadastrarMaquina(data);
+      }
 
+      setNomeMaquina('');
+      setIdDaMaquina('');
+      setOficina('');
+      setConjuntos('');
+      setEditingId(null);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Erro ao salvar a máquina');
+    }
+  };
+
+  const startEdit = (maquina: Maquina) => {
+    setEditingId(maquina.id);
+    setNomeMaquina(maquina.nome);
+    setIdDaMaquina(maquina.idMaquina);
+    setOficina(maquina.oficina);
+    setConjuntos(maquina.conjuntos || '');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
     setNomeMaquina('');
     setIdDaMaquina('');
     setOficina('');
     setConjuntos('');
+  };
+
+  const confirmDelete = async (id: string) => {
+    try {
+      await excluirMaquina(id);
+      setDeleteConfirmId(null);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Erro ao excluir a máquina');
+    }
   };
 
   return (
@@ -152,9 +154,20 @@ const CadastroMaquinas: React.FC = () => {
               />
             </div>
 
-            <button type="submit" className={styles.submitButton}>
-              Cadastrar Máquina
-            </button>
+            <div className={styles.buttonGroup}>
+              {editingId && (
+                <button
+                  type="button"
+                  className={styles.cancelButton}
+                  onClick={cancelEdit}
+                >
+                  Cancelar
+                </button>
+              )}
+              <button type="submit" className={styles.submitButton}>
+                {editingId ? 'Salvar Alterações' : 'Cadastrar Máquina'}
+              </button>
+            </div>
           </form>
         </div>
 
@@ -166,36 +179,76 @@ const CadastroMaquinas: React.FC = () => {
             </button>
           </div>
 
-          <div className={styles.machineList}>
-            {maquinasCadastradas.map((maquina) => (
-              <div key={maquina.id} className={styles.machineItem}>
-                <div className={`${styles.machineIcon} ${maquina.iconClass}`}>
-                  {maquina.icone}
+          {error && (
+            <div className={styles.errorState}>
+              <AlertTriangle size={32} className={styles.errorIcon} />
+              <p>{error}</p>
+            </div>
+          )}
+
+          {loading && (
+            <div className={styles.loadingState}>
+              <Loader2 size={32} className={styles.spinIcon} />
+              <p>Carregando...</p>
+            </div>
+          )}
+
+          {!loading && !error && (
+            <div className={styles.machineList}>
+              {maquinas.map((maquina) => (
+                <div key={maquina.id} className={styles.machineItem}>
+                  <div className={`${styles.machineIcon} ${iconMap[maquina.oficina.toLowerCase()]?.class || styles.iconGerador}`}>
+                    {iconMap[maquina.oficina.toLowerCase()]?.icon || <Wrench size={24} />}
+                  </div>
+                  <div className={styles.machineDetails}>
+                    <div className={styles.machineName}>{maquina.nome}</div>
+                    <div className={styles.machineId}>ID: {maquina.idMaquina}</div>
+                  </div>
+                  <div className={styles.machineOficina}>{maquina.oficina}</div>
+                  <div className={styles.actionIcons}>
+                    <button
+                      className={styles.actionButton}
+                      aria-label={`Editar ${maquina.nome}`}
+                      onClick={() => startEdit(maquina)}
+                    >
+                      <Pencil size={20} />
+                    </button>
+                    <button
+                      className={styles.actionButton}
+                      aria-label={`Excluir ${maquina.nome}`}
+                      onClick={() => setDeleteConfirmId(maquina.id)}
+                    >
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
                 </div>
-                <div className={styles.machineDetails}>
-                  <div className={styles.machineName}>{maquina.nome}</div>
-                  <div className={styles.machineId}>ID: {maquina.idMaquina}</div>
-                </div>
-                <div className={styles.machineOficina}>{maquina.oficina}</div>
-                <div className={styles.actionIcons}>
+              ))}
+            </div>
+          )}
+
+          {/* Modal de Confirmação de Exclusão */}
+          {deleteConfirmId && (
+            <div className={styles.modalBackdrop}>
+              <div className={styles.modal}>
+                <h3>Confirmar Exclusão</h3>
+                <p>Tem certeza que deseja excluir esta máquina?</p>
+                <div className={styles.modalActions}>
                   <button
-                    className={styles.actionButton}
-                    aria-label={`Editar ${maquina.nome}`}
-                    onClick={() => alert(`Editar máquina: ${maquina.nome}`)}
+                    className={styles.cancelButton}
+                    onClick={() => setDeleteConfirmId(null)}
                   >
-                    <Pencil size={20} />
+                    Cancelar
                   </button>
                   <button
-                    className={styles.actionButton}
-                    aria-label={`Excluir ${maquina.nome}`}
-                    onClick={() => alert(`Excluir máquina: ${maquina.nome}?`)}
+                    className={styles.deleteButton}
+                    onClick={() => confirmDelete(deleteConfirmId)}
                   >
-                    <Trash2 size={20} />
+                    Confirmar
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

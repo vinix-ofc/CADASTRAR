@@ -1,13 +1,1 @@
-/* Layout geral da aplicação */
-.app-layout {
-  display: flex;
-  height: 100vh;
-  background-color: #f5f5f5;
-}
-
-/* Conteúdo principal */
-.main-content {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
+/* App.css - Styles for the main App component */
